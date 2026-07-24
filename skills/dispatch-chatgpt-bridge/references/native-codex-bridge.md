@@ -1,7 +1,9 @@
 # Native Codex bridge contract
 
 This reference defines the native Codex routes that coexist with the loopback
-ChatGPT bridge. It deliberately uses four route IDs under three bridge families:
+ChatGPT bridge. It deliberately uses four route IDs under three bridge families.
+The Chinese terms are fixed: 子智能体 means a temporary parallel worker and
+子代理 means a durable, long-term Codex conversation or process.
 
 | Family | Route ID | User-facing name | Transport |
 | --- | --- | --- | --- |
@@ -27,17 +29,19 @@ conversation happens to be visible.
   going to execute it. The exact `CODEX_HANDOFF` proposal and later approval
   rules in `handoff-contract.md` still apply.
 
-The phrase “子代理” is ambiguous in Chinese. Do not silently map it. Ask for
-one of these exact labels when the user has not specified the route:
+Use the fixed terminology above. The phrase “子代理” routes directly to
+`codex-conversation`; do not ask the user to choose between native routes. Ask
+for clarification only when the user explicitly gives conflicting requirements
+(for example, “子代理但不要保留历史”). The remaining route labels are:
 
 ```text
-子智能体（并行执行）
-Codex 对话转交（独立对话）
+子智能体（临时并行执行）
+子代理（固定长期 Codex 对话）
 Codex → GPT（生图/独立 GPT 任务）
 GPT → Codex（规划交接）
 ```
 
-## `codex-subagent`: 子智能体
+## `codex-subagent`: 子智能体（临时并行 worker）
 
 Use the native multi-agent tools when they are available in the current Codex
 session:
@@ -67,10 +71,11 @@ fallback. If the native multi-agent tool is not surfaced, return
 `native-route-unavailable` and stop; do not pretend that a ChatGPT window is a
 Codex subagent.
 
-## `codex-conversation`: Codex 对话转交
+## `codex-conversation`: 子代理（固定长期 Codex 对话）
 
-Use this route for a durable Codex-to-Codex message. It is different from a
-subagent: the destination keeps its own task history and can be revisited.
+Use this route for a durable Codex-to-Codex message or fixed long-term process.
+It is different from a 子智能体: the destination keeps its own task history
+and can be revisited.
 
 - For a new destination, call `codex_app__create_thread` with a project target
   when repository context is required, or a projectless target otherwise.
@@ -86,7 +91,7 @@ Stable trigger template:
 
 ```text
 [桥接路由: codex-conversation]
-请把以下内容转交给 Codex 对话（独立对话）：
+请把以下内容转交给子代理（固定长期 Codex 对话）：
 目标：<新建一个 Codex 对话 / 指定已有任务>
 任务：<self-contained task>
 上下文：<minimal necessary context>

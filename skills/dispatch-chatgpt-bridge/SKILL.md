@@ -24,7 +24,7 @@ For mixed workflows, let Codex prepare the minimal self-contained context, dispa
 
 This Skill covers three families and four explicit route IDs. Read
 [references/native-codex-bridge.md](references/native-codex-bridge.md) before
-native Codex delegation or when the user's wording says “子代理”.
+native Codex routing or when the user's wording mentions 子智能体 or 子代理.
 
 - `codex-subagent`: 子智能体（并行执行） through native multi-agent tools.
 - `codex-conversation`: Codex 对话转交（独立对话） through native Codex
@@ -32,11 +32,17 @@ native Codex delegation or when the user's wording says “子代理”.
 - `codex-to-gpt`: Codex → GPT for self-contained GPT work or image generation.
 - `gpt-to-codex`: GPT → Codex through the strict `CODEX_HANDOFF` watcher.
 
-Do not silently interpret “子代理” as either native route. Require the user to
-choose the exact label when the distinction matters. Never hand-write or scrape
-the UI's `<codex_delegation>` / `source_thread_id`; those are generated trace
-metadata. Native Codex tools are the stable transport for the first two routes;
-the loopback bridge runner is the stable transport for the last two.
+Use this fixed Chinese terminology:
+
+- 子智能体 = `codex-subagent`: 临时、有边界的并行 worker；结果回到当前主任务。
+- 子代理 = `codex-conversation`: 固定、长期的 Codex 对话或执行流程；保留独立历史并可继续追问。
+
+Do not treat “子代理” as ambiguous: route it directly to `codex-conversation`.
+Use `codex-subagent` only when the user says 子智能体 or explicitly asks for a
+temporary/parallel worker. Never hand-write or scrape the UI's
+`<codex_delegation>` / `source_thread_id`; those are generated trace metadata.
+Native Codex tools are the stable transport for the first two routes; the
+loopback bridge runner is the stable transport for the last two.
 
 Native Codex routes are not actions of `chatgpt-bridge.mjs`. When the matching
 Codex app tool is not surfaced, fail closed with a route-unavailable result;

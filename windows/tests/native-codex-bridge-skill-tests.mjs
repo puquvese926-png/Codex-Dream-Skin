@@ -49,7 +49,33 @@ test("skill metadata exposes the three bridge families without ambiguous child-a
     "utf8",
   );
   assert.match(metadata, /子智能体/);
-  assert.match(metadata, /Codex 对话转交/);
+  assert.match(metadata, /子代理/);
+  assert.match(metadata, /codex-conversation/);
   assert.match(metadata, /Codex.*GPT|GPT.*Codex/s);
   assert.doesNotMatch(metadata, /子代理（对话之前传递）/);
+});
+
+test("maps 子智能体 to ephemeral workers and 子代理 to durable Codex conversations", async () => {
+  const skill = await fs.readFile(path.join(skillRoot, "SKILL.md"), "utf8");
+  const native = await fs.readFile(
+    path.join(skillRoot, "references", "native-codex-bridge.md"),
+    "utf8",
+  );
+  const guide = await fs.readFile(
+    path.join(projectRoot, "docs", "dispatch-chatgpt-bridge-guide.md"),
+    "utf8",
+  );
+  const playbook = await fs.readFile(
+    path.join(skillRoot, "references", "failure-playbook.md"),
+    "utf8",
+  );
+
+  assert.match(skill, /子智能体[\s\S]{0,120}codex-subagent/);
+  assert.match(skill, /子代理[\s\S]{0,160}codex-conversation/);
+  assert.match(native, /子智能体[\s\S]{0,120}codex-subagent/);
+  assert.match(native, /子代理[\s\S]{0,160}codex-conversation/);
+  assert.match(guide, /子智能体[\s\S]{0,160}临时|子代理[\s\S]{0,160}长期/);
+  assert.match(playbook, /子代理[\s\S]{0,240}codex-conversation/);
+  assert.doesNotMatch(skill, /子代理.*歧义|Do not silently interpret “子代理”/s);
+  assert.doesNotMatch(native, /“子代理” is ambiguous|子代理.*二选一/i);
 });
