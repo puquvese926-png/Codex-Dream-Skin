@@ -1,0 +1,4 @@
+interface:
+  display_name: "Codex Bridge Router"
+  short_description: "Route 子智能体、Codex 对话转交 and GPT handoffs safely"
+  default_prompt: "Use $dispatch-chatgpt-bridge to choose exactly one route: 子智能体（codex-subagent）, Codex 对话转交（codex-conversation）, Codex→GPT dispatch, or GPT→Codex CODEX_HANDOFF. Pin identities, require authorization, preserve recovery safety, and never duplicate-send."
